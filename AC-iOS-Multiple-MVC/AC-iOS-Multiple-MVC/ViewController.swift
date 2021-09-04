@@ -12,20 +12,31 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    var animals = [ZooAnimal]() {
+    var animals = [[ZooAnimal]]() {
         didSet {
             tableView.reloadData()
         }
     }
     
+    private var sectionedAnimals = [[ZooAnimal]]() {
+        didSet {
+            tableView.reloadData()
+        }
+    }
+   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        dump(ZooAnimal.getSections())
         tableView.dataSource = self
         loadData()
+        
+        
     }
     
     func loadData() {
-        animals = ZooAnimal.zooAnimals
+        animals = ZooAnimal.getSections()
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -33,22 +44,33 @@ class ViewController: UIViewController {
             return
         }
         
-        dvc.animalsDVC = animals[indexPath.row]
+        dvc.animalsDVC = animals[indexPath.section][indexPath.row]
     }
 }
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        animals.count
+        animals[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "animalCell", for: indexPath)
-        let animal = animals[indexPath.row]
+        let animal = animals[indexPath.section][indexPath.row]
         cell.textLabel?.text = animal.name
         cell.detailTextLabel?.text = animal.info
         cell.imageView?.image = UIImage(named: "\(animal.imageNumber)")
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return animals[section].first?.classification
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return animals.count
+    }
+    
+    
+    
 }
 

@@ -19,7 +19,9 @@ class zooAnimalDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadData()
+        
     }
+
     
     func loadData() {
         imageView.image = UIImage(named: "\(animalsDVC.imageNumber)")
